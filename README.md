@@ -12,7 +12,7 @@ Write-ups and teaching-style scripts from CTF rooms and lab exercises I've worke
 
 Cybersecurity student focused on web application security and bug bounty hunting (IDOR, broken access control, business logic flaws, auth issues). Certified through NTI/NTRA (Cybersecurity) and Cisco Networking Academy (Networking & Ethical Hacking).
 
-- LinkedIn: [add your link](#)
+- LinkedIn: [Ahmed Abdalrhman](https://www.linkedin.com/in/ahmed-abdalrhman838/)
 - Medium: [@alzeaty](https://medium.com/@alzeaty)
 
 ## License
