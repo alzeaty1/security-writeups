@@ -3,8 +3,26 @@
 **Room:** Do Not Disturb
 **Difficulty:** Medium
 
-**Vulnerability classes:** NoSQL Injection, Server-Side Template Injection, Remote Code Execution, Privilege Escalation
+Four flaws, in this order:
 
-A `{"$ne": ""}` payload bypassed the MongoDB-backed login, EJS template injection gave RCE, and the shell that came back had a Node.js inspector bound to loopback. Two privilege escalations followed: a service account, then a `debugfs` read of the raw block device.
+1. A MongoDB-backed login that trusted the query object. `{"$ne": ""}` is not a
+   password, it is a comparison that is true of every document that has a password.
+   No guessing, no wordlist, no rate limit to fight.
+2. EJS template injection on the way to RCE.
+3. The shell that came back had a Node inspector bound to loopback — reachable by
+   port-forwarding, because loopback is only a boundary from outside the box.
+4. Two escalations after that: a service account, then `debugfs` reading the raw block
+   device straight off disk.
 
-Full write-up (methodology, payloads, no flag spoilers): **[alzeaty1.github.io/writeups/do-not-disturb](https://alzeaty1.github.io/writeups/do-not-disturb/)**
+The dead ends were worth as much as the wins. `execSync` kept failing with
+`Bad fd number`, and the reason is that `>/dev/tcp/...` redirection is a **bash**
+feature — the child was being run through `dash`, which cannot parse it. The fix is
+not another payload, it is specifying the shell you actually meant. I lost time to
+that one and wrote it down so nobody else has to.
+
+**Methodology, payload construction, both escalations, no flag spoilers:** the full
+write-up lives at
+**[alzeaty1.github.io/writeups/dodonturb](https://alzeaty1.github.io/writeups/dodonturb/)**
+
+Nothing in this folder is a script, which is intentional — the interesting part of
+this room is the sequence, not a single repeatable action.

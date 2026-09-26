@@ -1,10 +1,16 @@
 # Room 404
 
-**Room:** Byte Lotus - Room 404
+**Room:** Byte Lotus — Room 404
 **Difficulty:** Easy
 
-**Vulnerability classes:** Information Disclosure, Exposed Version Control Directory (.git), Directory Enumeration with ffuf
+They deployed the app with its `.git` directory still attached, and served it to
+anyone who asked.
 
-A Python/Werkzeug app on port 8080 shipped its `.git` directory to anyone who asked. `ffuf` found it; `.git/refs/heads/main` confirmed it; the history gave up the source.
+That is the room. `ffuf` found the path, `.git/refs/heads/main` confirmed it, and the
+history gave up the source. Check `.gitignore` before you ship — a version control
+directory on a public web root is a self-served source code leak, and the recovery
+step afterwards is "rotate everything that was ever committed", not "delete the
+folder".
 
-Full write-up (methodology, payloads, no flag spoilers): **[alzeaty1.github.io/writeups/room-404](https://alzeaty1.github.io/writeups/room-404/)**
+Enumeration and confirmation steps, no flag spoilers:
+**[alzeaty1.github.io/writeups/room404](https://alzeaty1.github.io/writeups/room404/)**

@@ -3,8 +3,18 @@
 **Room:** Complimentary
 **Difficulty:** Easy
 
-**Vulnerability classes:** AWS Cognito identity pool misconfiguration, IAM overprivileged role, DynamoDB Scan exposure
+No exploit here, and that is the interesting part.
 
-A guest-role identity pool issued credentials whose policy allowed `dynamodb:Scan` against every table in the account. No exploit, no credential theft - the misconfiguration was the vulnerability, and the guest role could read every profile in the app, not just its own.
+The app used a Cognito identity pool with an unauthenticated "guest" role, and the
+policy attached to that role allowed `dynamodb:Scan` across the account. So the chain
+was: request guest credentials from the public pool, attach them to the AWS CLI, scan
+the tables, read other people's records. Every step is a documented API call. Nothing
+was broken except the policy.
 
-Full write-up (methodology, payloads, no flag spoilers): **[alzeaty1.github.io/writeups/complimentary-aws](https://alzeaty1.github.io/writeups/complimentary-aws/)**
+The lesson is narrow and worth stating plainly — a Scan permission is a data
+disclosure permission. "Read-only" is not a safety property when the read is
+unscoped and unauthenticated.
+
+The reasoning, the exact policy that gives it away, and how I checked the blast
+radius without touching anything I shouldn't have: **[the write-up on
+alzeaty1.github.io](https://alzeaty1.github.io/writeups/complimentary-aws/)**

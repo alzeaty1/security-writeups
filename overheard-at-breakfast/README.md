@@ -3,8 +3,16 @@
 **Room:** Overheard at Breakfast
 **Difficulty:** Easy
 
-**Vulnerability classes:** OSINT, Social Media Analysis, Email Hashing (MD5), Third-Party Profile Enumeration, Base64 Decoding
+One leaked screenshot of a conversation was the whole entry point. From it: an email
+address, which is a person's name in a different encoding.
 
-One screenshot of a leaked conversation was enough to extract an email address. Normalizing it and hashing it to MD5 turned a name into a Gravatar lookup, and the profile behind that hash carried the next clue in base64.
+Normalize the address, MD5 it, and Gravatar's public API will tell you whether a
+profile exists for that hash without you ever sending the address anywhere. That
+profile led to the next clue, which was base64.
 
-Full write-up (methodology, payloads, no flag spoilers): **[alzeaty1.github.io/writeups/overheard-at-breakfast](https://alzeaty1.github.io/writeups/overheard-at-breakfast/)**
+No scanning, no exploit, no server to attack. Every step was a public API and a hash
+function, and the whole room fell apart once I stopped thinking of the email address
+as an identity and started thinking of it as an input to a lookup.
+
+The full chain, in order, with nothing spoiled: **[Overheard at Breakfast on
+alzeaty1.github.io](https://alzeaty1.github.io/writeups/overheard-at-breakfast/)**

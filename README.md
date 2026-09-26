@@ -1,38 +1,61 @@
 # Security Writeups
 
-Write-ups and teaching-style scripts from CTF rooms and lab exercises I've worked through, mainly TryHackMe and PortSwigger. Each folder ships with a "teaching version" script where I've deliberately left the key values blank. If you fill them in from a writeup instead of the traffic, you learned nothing.
+Lab write-ups from self-directed work, mostly TryHackMe, plus a PortSwigger SQLi
+practical. The reasoning lives on the site — the full methodology, the payloads, the
+parts where I went wrong first — and this repo is the index and the scripts.
 
-Full write-ups are hosted on my site and linked from each room folder. This repo keeps the scripts and the index.
+Nine rooms, and they are not nine unrelated things. What they share is that almost
+none of them needed a novel exploit. What they have in common:
 
-## Writeups
+- **Misconfiguration did most of the work.** A `.git` directory on a web root. A
+  password in a daemon's command-line arguments. A Cognito guest role with
+  `dynamodb:Scan` on everything. A loopback-bound inspector that only looked safe.
+- **The boring ones needed patience more than tools.** Boolean and time-based blind
+  SQLi are one character per request. CryptoCabana was not a crypto problem at all —
+  the secret was never the value, it was the version history.
+- **The chaining is the content.** None of these rooms are solved in one step, and
+  the write-ups spend most of their length on how step two was even possible after
+  step one.
 
-| Room | Category | Difficulty | Folder |
-|---|---|---|---|
-| Beach Bar | Network / Web RCE | Easy | [./beach-bar](./beach-bar) |
-| Complimentary | Cloud (AWS) | Easy | [./complimentary-aws](./complimentary-aws) |
-| CryptoCabana | Cloud (Azure) | Medium | [./cryptocabana](./cryptocabana) |
-| Do Not Disturb | Web RCE + PrivEsc | Medium | [./do-not-disturb](./do-not-disturb) |
-| Overheard at Breakfast | OSINT | Easy | [./overheard-at-breakfast](./overheard-at-breakfast) |
-| Packed Light | Network Forensics | Easy | [./packed-light](./packed-light) |
-| Room 404 | Information Disclosure | Easy | [./room-404](./room-404) |
-| SQL Injection | Web / SQLi | Easy | [./sqli](./sqli) |
-| XSS Introduction | Web / XSS | Easy | [./xss-introduction](./xss-introduction) |
+Coverage across the set: web exploitation (SQLi, XSS, SSTI, deserialization), cloud
+credential abuse on both AWS and Azure, network forensics, and OSINT that never
+touched a server at all.
 
-## Portfolio
+## The teaching-script convention
 
-The full write-ups, with the payloads and the dead ends, live at **[alzeaty1.github.io](https://alzeaty1.github.io/)**.
+Some folders ship a Python script. In every case it is a **teaching version**: the
+key values, targets, and query templates are left blank or as obvious placeholders on
+purpose.
 
-## Tools
+The reasoning is simple. A script that works out of the box against a live instance
+teaches you the invocation, not the mechanism, and it ages badly. If you open
+`beachbar_rce.py` and it runs, you have learned nothing about why the payload works.
+Fill in the blanks from your own traffic, or you have skipped the part that mattered.
 
-- [ctf-crypto-analysis-tool](https://github.com/alzeaty1/ctf-crypto-analysis-tool) - modular crypto analysis CLI (XOR, entropy, ECB detection)
+## Rooms
+
+| Room | What it actually was | Difficulty |
+|---|---|---|
+| [Beach Bar](./beach-bar) | PyYAML deserialization RCE, then a root daemon that leaked its own password via `/proc` | Easy |
+| [Complimentary](./complimentary-aws) | An unauthenticated Cognito role allowed to `Scan` every table | Easy |
+| [CryptoCabana](./cryptocabana) | Azure SAS token to service principal to Key Vault — and a rotated secret's version history | Medium |
+| [Do Not Disturb](./do-not-disturb) | `{"$ne": ""}` login bypass, EJS template injection, loopback Node inspector, two escalations | Medium |
+| [Overheard at Breakfast](./overheard-at-breakfast) | An email as an MD5 input to Gravatar, and no server to attack at all | Easy |
+| [Packed Light](./packed-light) | A keylogger exfiltrating keystrokes one XOR'd cookie at a time | Easy |
+| [Room 404](./room-404) | The repository served to anyone who asked for it | Easy |
+| [SQL Injection](./sqli) | Four oracles, one endpoint | Easy |
+| [XSS Introduction](./xss-introduction) | One encoding bug in four shapes, ending with blind | Easy |
+
+## Elsewhere
+
+- Write-ups: **[alzeaty1.github.io](https://alzeaty1.github.io/)**
+- [ctf-crypto-analysis-tool](https://github.com/alzeaty1/ctf-crypto-analysis-tool) — modular crypto analysis CLI (XOR, entropy, ECB detection)
+- TryHackMe: [tryhackme.com/p/ALZeaty](https://tryhackme.com/p/ALZeaty)
+- LinkedIn: [Ahmed Abdalrhman](https://www.linkedin.com/in/ahmed-abdalrhman838/)
 
 ## About
 
 Junior penetration tester. Self-directed lab work across web application security, network analysis, and cloud credential abuse (AWS and Azure). Certified through NTI/NTRA (Cybersecurity Academy) and TryHackMe Advent of Cyber 2025 (24 challenges).
-
-- Site: [alzeaty1.github.io](https://alzeaty1.github.io/)
-- TryHackMe: [tryhackme.com/p/ALZeaty](https://tryhackme.com/p/ALZeaty)
-- LinkedIn: [Ahmed Abdalrhman](https://www.linkedin.com/in/ahmed-abdalrhman838/)
 
 ## License
 
